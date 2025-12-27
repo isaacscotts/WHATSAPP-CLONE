@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  email String?
+  firstName String?
+  lastName String?
+  username String?
+  clerkId String @unique
+  profilePic String?
+  about String? @default("Hello iam using isaac tsup solid")
+  onboarding Boolean @default(false)
+  sentMessages Messages[] @relation("sentMessages")
+  receivedMessages Messages[] @relation("receivedMessages")
+} 
+
+model Messages{
+  id Int @id @default(autoincrement())
+  sender User @relation("sentMessages",fields: [senderId],references: [id]) 
+  senderId Int
+  receiver User @relation("receivedMessages",fields: [receiverId],references: [id])
+  receiverId Int
+  message String
+  type String @default("text")
+  messageStatus String @default("sent")
+  createdAt DateTime @default(now())
+
+}
