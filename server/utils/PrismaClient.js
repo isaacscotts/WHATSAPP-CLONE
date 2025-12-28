@@ -1,15 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import dotenv from "dotenv"
-dotenv.config()
-declare global{
-//es-lint-disable-next-line no-var
-    var prisma:PrismaClient | undefined
+import dotenv from "dotenv";
+dotenv.config();
+
+const globalPrisma = globalThis.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prisma = globalPrisma;
 }
 
-const prisma=global.prisma || new PrismaClient
-
-if(process.NODE_ENV!=="production"){
-    global.prisma=prisma
-}
-
-export const db=prisma;
+export const db = globalPrisma;
+export default globalPrisma;
