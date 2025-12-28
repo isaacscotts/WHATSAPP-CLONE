@@ -119,4 +119,15 @@ io.on("connection", (socket) => {
       }
    })
 
+    // CLEANUP ON DISCONNECT
+  socket.on("disconnect", () => {
+    for (const [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        break;
+      }
+    }
+    console.log("❌ client disconnected:", socket.id);
+  });
+
 });
