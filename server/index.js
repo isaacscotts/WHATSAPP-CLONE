@@ -19,10 +19,11 @@ const server = app.listen(PORT, () => {
 });
 
 global.onlineUsers = new Map();
-
+// "https://isaac-tsups.vercel.app",
 const io = new Server(server, {
+  
   cors: {
-    origin: "https://isaac-tsups.vercel.app",
+    origin:"https://isaac-tsups.vercel.app",
   },
 });
 

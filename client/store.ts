@@ -21,6 +21,8 @@ const useUserStore=create()(persist(
         isVideoCall:false
       }),
       setIncomingCall:(from)=>set({incomingCall:from}),
+      isScreenShare:false,
+      setIsScreenShare:(info)=>set({isScreenShare:info}),
       setIsVideoCall:(info)=>set({isVideoCall:info}),
       setPlayingMessageId:(id)=>set({playingMessageId:id}),
       setUserInfo:(info)=>set({userInfo:info}),
