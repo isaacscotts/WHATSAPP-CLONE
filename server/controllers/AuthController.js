@@ -1,4 +1,4 @@
-import { db } from "../utils/PrismaClient.ts";
+import { db } from "../utils/PrismaClient.js";
 export const checkUser=async (req,res,next)=>{
     const {clerkId} =req.body;
    try{

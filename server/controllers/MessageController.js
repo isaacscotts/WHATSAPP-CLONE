@@ -1,5 +1,5 @@
 import { renameSync } from "fs"
-import { db } from "../utils/PrismaClient.ts"
+import { db } from "../utils/PrismaClient.js"
 import {rename} from "fs/promises"
 export const addMessage=async (req,res,next)=>{
     const {from,to,message}=req.body
