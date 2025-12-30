@@ -15,13 +15,18 @@ const useUserStore=create()(persist(
       isCalling:false,
       audioUnlocked:false,
       isAudioCall:false,
+      callPeerId: null,
+      peerSocketId: null,
+setPeerSocketId: (id) => set({ peerSocketId: id }),
+      setCallPeerId: (id) => set({ callPeerId: id }),
       setIsAudioCall:(info)=>set({isAudioCall:info}),
       setAudioUnlocked:(info)=>set({audioUnlocked:info}),
       setIsCalling:(info)=>set({isCalling:info}),
       endCall:()=>set({
         incomingCall:null,
         isVideoCall:false,
-        isAudioCall:false
+        isAudioCall:false,
+        callPeerId:false
       }),
       setIncomingCall:(from)=>set({incomingCall:from}),
       isScreenShare:false,

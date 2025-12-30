@@ -51,7 +51,7 @@ io.on("connection", (socket) => {
 
   //webrtc ice
   socket.on("webrtc-ice",({candidate,to})=>{
-    const sendUserSocket=onlineUsers.get(to)
+    const sendUserSocket=to
     if(sendUserSocket){
       socket.to(sendUserSocket).emit("webrtc-ice",{candidate})
     }
@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
 
   // web rtc offer 
   socket.on("webrtc-offer",({to,from,offer})=>{
-        const sendUserSocket=onlineUsers.get(to)
+        const sendUserSocket=to
         if(sendUserSocket){
           console.log("web rtc offer from",from)
           socket.to(sendUserSocket).emit("webrtc-offer",{offer})
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
 
   // web rtc answer 
   socket.on('webrtc-answer',({answer,to,from})=>{
-    const sendUserSocket=onlineUsers.get(to)
+    const sendUserSocket=to
     if(sendUserSocket){
      console.log("web rtc anwser from",from)
       socket.to(sendUserSocket).emit('webrtc-answer',{answer})
@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
  // call accepted
  socket.on("call-accepted",({from,to,type})=>{
   console.log("call accepting",to)
-    const sendUserSocket=onlineUsers.get(to)
+    const sendUserSocket=to
     if(sendUserSocket){
       console.log("call accepted from ",from,'to',to)
       socket.to(sendUserSocket).emit("call-accepted",{from,to,type})
@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
 
  // end call
    socket.on("end-call",({to})=>{
-     const sendUserSocket=onlineUsers.get(to)
+     const sendUserSocket=to
       if(sendUserSocket){
         socket.to(sendUserSocket).emit("call-ended")
       }
@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
 
    //call rejected
    socket.on("call-rejected",({to,from})=>{
-    const sendUserSocket=onlineUsers.get(to)
+    const sendUserSocket=to
     if(sendUserSocket){
       console.log('call rejected by ',from,"for",to)
       socket.to(sendUserSocket).emit('call-rejected',{from,to})
@@ -113,7 +113,7 @@ io.on("connection", (socket) => {
    })
 
    socket.on("call-cancel",({from,to})=>{
-        const sendUserSocket=onlineUsers.get(to)
+        const sendUserSocket=to
       if(sendUserSocket){
         console.log("user ",from,"cancalled the call"," for",to)
         socket.to(sendUserSocket).emit("call-cancel",{from,to})

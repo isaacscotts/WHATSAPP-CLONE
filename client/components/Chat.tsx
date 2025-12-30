@@ -14,12 +14,13 @@ import AudioCall from "./AudioCall";
 
 
 const Chat = () => {
-  const {isVideoCall,incomingCall,setIsAudioCall,isAudioCall,setIsCalling,isCalling,userInfo,setIsVideoCall,currentChatUser,setIncomingCall}=useUserStore()
+  const {isVideoCall,incomingCall,peerSocketId,callPeerId,setIsAudioCall,isAudioCall,setIsCalling,isCalling,userInfo,setIsVideoCall,currentChatUser,setIncomingCall}=useUserStore()
   const socket=useSocketContext()
   const ringRef=useRef(null)
   const  [audioUnlocked,setAudioUnlocked]=useState(false)
   
   useEffect(() => {
+   
   if (!ringRef.current) {
     const audio = new Audio("/sounds/with-you.mp3")
     audio.loop = true
@@ -120,7 +121,7 @@ const Chat = () => {
                 <div className="flex gap-2">
                        <button onClick={()=>{
                  stopRing()
-                socket.emit("call-accepted",{from:userInfo?.id,to:incomingCall?.from,type:incomingCall?.type})
+                socket.emit("call-accepted",{from:socket.id,to:peerSocketId,type:incomingCall?.type})
                 if(incomingCall?.type==="video"){
 setIsVideoCall(true)
                 } else{
@@ -131,8 +132,8 @@ setIsVideoCall(true)
              <button onClick={()=>{
              stopRing()
            socket.emit('call-rejected',{
-            to:incomingCall?.from,
-            from:userInfo?.id
+            to:peerSocketId,
+            from:socket.id
            })
            setIsVideoCall(false)
            setIncomingCall(null)

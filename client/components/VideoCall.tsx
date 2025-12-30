@@ -5,7 +5,7 @@ import useUserStore from "@/store";
 import { useEffect, useRef } from "react";
 
 const VideoCall=({isCaller})=>{
-  const {currentChatUser,userInfo,incomingCall,endCall,setIsScreenShare,isScreenShare}=useUserStore()
+  const {currentChatUser,peerSocketId,userInfo,callPeerId,incomingCall,endCall,setIsScreenShare,isScreenShare}=useUserStore()
   const localStreamRef=useRef(null)
   const remoteStreamRef=useRef(null)
   const screenStreamRef=useRef(null)
@@ -51,7 +51,7 @@ const VideoCall=({isCaller})=>{
   }
 
   if (socket && currentChatUser) {
-    socket.emit("end-call", { to: incomingCall?.from || currentChatUser?.id });
+    socket.emit("end-call", { to: peerSocketId || currentChatUser?.id });
   }
 };
 
@@ -114,6 +114,20 @@ useEffect(()=>{
     setIsScreenShare(false)
  
   }   
+
+
+  
+
+  useEffect(()=>{
+const handleUnload=()=>{
+    socket.emit("end-call",{to:peerSocketId})
+  }
+  window.addEventListener('beforeunload',handleUnload)
+
+  return()=>{
+    window.addEventListener("beforeunload",handleUnload)
+  }
+  },[])
   useEffect(()=>{
     if(!socket || !currentChatUser) return
     //resetting
@@ -133,6 +147,29 @@ useEffect(()=>{
       ]
     })
      pcRef.current=pc
+     
+      let disconnectTimeout=null;
+
+      pc.oniceconnectionstatechange=()=>{
+        console.log("Ice state",pc.iceConnectionState)
+      
+         if(pc.iceConnectionState==="disconnected"){
+          disconnectTimeout=setTimeout(()=>{
+             if(pc.iceConnectionState !=="connected"  && 
+              pc.iceConnectionState !=="checking"
+             ){
+              endCall()
+             }
+          },8000)
+         }
+
+         if(pc.iceConnectionState==="connected"){
+          clearTimeout(disconnectTimeout)
+         }
+      }
+   
+
+
 /// setting remote track
      pc.ontrack=(e)=>{
        console.log('tracks added')
@@ -144,7 +181,7 @@ useEffect(()=>{
      pc.onicecandidate=(e)=>{
           if(e.candidate){
                socket.emit("webrtc-ice",{
-          to:currentChatUser?.id,
+          to:peerSocketId,
           candidate:e.candidate,
           from:userInfo?.id
          })
@@ -160,7 +197,7 @@ useEffect(()=>{
       await  pc.setLocalDescription(offer)
 
        socket.emit("webrtc-offer",{
-         to:currentChatUser?.id,
+         to:peerSocketId,
          offer,
          from:userInfo?.id
        })
@@ -194,7 +231,7 @@ const handleOffer=async({offer})=>{
      await pc.setLocalDescription(answer)
 
      socket.emit("webrtc-answer",{
-      to:incomingCall?.from,
+      to:peerSocketId,
       from:userInfo?.id,
       answer,
      })
@@ -232,6 +269,7 @@ const handleAnswer=async({answer})=>{
   socket.on("webrtc-answer",handleAnswer)
  
     return ()=>{
+      clearTimeout(disconnectTimeout)
       socket.off("webrtc-ice",handleIceCandidate)
  socket.off("webrtc-offer",handleOffer)
 socket.off("webrtc-answer",handleAnswer)

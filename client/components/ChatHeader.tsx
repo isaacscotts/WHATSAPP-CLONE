@@ -11,16 +11,17 @@ import { useSocketContext } from "@/SocketContext";
 
 const ChatHeader = () => {
   const socket=useSocketContext()
-  const { currentChatUser, userInfo, setIsVideoCall,  setIsCalling} = useUserStore();
+  const { currentChatUser, userInfo,setCallPeerId, setIsVideoCall,setIsCalling} = useUserStore();
  
  const startCall=async(audio)=>{
   setIsCalling(true)
   if(!socket || !currentChatUser || !userInfo)  return;
       socket.emit("call-user",{
-        from:userInfo?.id,
+        from:socket.id,
         to:currentChatUser?.id,
         type:audio?"audio":"video"
       })
+      setPeerSocketId(socket.id)
 
  }
   
@@ -32,7 +33,11 @@ const ChatHeader = () => {
 
       <div className="flex gap-4 text-white text-2xl items-center">
         <MdCall className="cursor-pointer" onClick={()=>startCall(true)} />
-        <FaVideo className="cursor-pointer" onClick={()=>startCall(false)}/>
+        <FaVideo className="cursor-pointer" onClick={()=>{
+      setCallPeerId(currentChatUser.id)
+          
+          startCall(false)
+        }}/>
         <FaSearch className="cursor-pointer" />
         <BsThreeDotsVertical />
       </div>

@@ -9,11 +9,13 @@ const SocketContext = createContext(null);
 export const SocketContextProvider = ({ children }) => {
   const {
     userInfo,
+     setPeerSocketId,
     addMessager,
     setIncomingCall,
     setIsVideoCall,
     setIsCalling,
-    setIsAudioCall
+    setIsAudioCall,
+    setCallPeerId
 
   } = useUserStore();
 
@@ -34,6 +36,8 @@ export const SocketContextProvider = ({ children }) => {
   //incoming call
    socketRef.current.on("incoming-call",({from,type})=>{
     console.log("incoming call from",from)
+     setPeerSocketId(from)
+    setCallPeerId(from)
      setIncomingCall({from,type})
      
    })
@@ -41,6 +45,7 @@ export const SocketContextProvider = ({ children }) => {
    // call accepted
    socketRef.current.on('call-accepted',({from,type})=>{
     setIsCalling(false)
+    setPeerSocketId(from)
     if(type==="video"){
 setIsVideoCall(true)
     } else{
