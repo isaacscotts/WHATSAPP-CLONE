@@ -11,7 +11,7 @@ import { useSocketContext } from "@/SocketContext";
 
 const ChatHeader = () => {
   const socket=useSocketContext()
-  const { currentChatUser, userInfo,setCallPeerId,setPeerSocketId setIsVideoCall,setIsCalling} = useUserStore();
+  const { currentChatUser, userInfo,setCallPeerId,setPeerSocketId,setIsVideoCall,setIsCalling} = useUserStore();
  
  const startCall=async(audio)=>{
   setIsCalling(true)
