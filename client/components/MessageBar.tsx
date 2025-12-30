@@ -10,6 +10,7 @@ import EmojiPicker from 'emoji-picker-react';
 import SendMessagePicker from "./SendImageMessagePicker";
 import { useSocketContext } from "@/SocketContext";
 import CaptureAudio from "./CaptureAudio";
+import CaptureSolid from "./CaptureSolid"
 import Capture from "./CapturePro";
 
 const MessageBar=()=>{
@@ -123,6 +124,7 @@ const toggleModal=(e)=>{
       {voiceRecording && (
        // <CaptureAudio/>
        <Capture start={true} hide={()=>setVoiceRecording(false)}/>
+      
       
       )}
 

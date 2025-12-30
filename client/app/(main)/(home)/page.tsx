@@ -4,13 +4,25 @@ import ChatList from "@/components/ChatList";
 import Empty from "@/components/Empty";
 import useUserStore from "@/store";
 import { allMessages } from "@/utils/ApiRoutes";
-import {UserButton,SignedIn} from "@clerk/nextjs"
+import {useRouter} from "next/navigation"
+import {UserButton,SignedIn,useUser} from "@clerk/nextjs"
 import { currentUser } from "@clerk/nextjs/server";
 import { useEffect } from "react";
 const Home=()=>{
+  const {user,isLoaded}=useUser()
+  const router=useRouter()
   const {currentChatUser,userInfo,messages,setMessages}=useUserStore()
   console.log(currentChatUser?.id)
   console.log('messagessss',messages)
+  useEffect(()=>{
+  if(!user){
+    return router.push("/login")
+  }
+    
+  },[user])
+ if(!isLoaded){
+  return null
+ }
   const fetchMessages=async ()=>{
     try{
 
