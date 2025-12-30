@@ -9,20 +9,19 @@ import {UserButton,SignedIn,useUser} from "@clerk/nextjs"
 import { currentUser } from "@clerk/nextjs/server";
 import { useEffect } from "react";
 const Home=()=>{
-  const {user,isLoaded}=useUser()
+  const {user,isLoaded,isSignedIn}=useUser()
   const router=useRouter()
   const {currentChatUser,userInfo,messages,setMessages}=useUserStore()
   console.log(currentChatUser?.id)
   console.log('messagessss',messages)
-  useEffect(()=>{
-  if(!user){
-    return router.push("/login")
-  }
-    
-  },[user])
- if(!isLoaded){
-  return null
- }
+ 
+ 
+
+     useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace("/login");
+    }
+  }, [isLoaded, isSignedIn, router]);
   const fetchMessages=async ()=>{
     try{
 
@@ -43,8 +42,10 @@ const Home=()=>{
     }
   
   },[currentChatUser])
-
-  
+if(!isLoaded){
+  return null
+ }
+  if(!isSignedIn) return null;
   return (
     <div className="flex">
      <ChatList/>

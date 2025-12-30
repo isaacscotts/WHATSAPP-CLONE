@@ -8,12 +8,13 @@ import { useEffect, useRef,useState } from "react";
 import { MdCallEnd } from "react-icons/md";
 import { useSocketContext } from "@/SocketContext";
 import Avatar from "./Avatar";
+import AudioCall from "./AudioCall";
 
 
 
 
 const Chat = () => {
-  const {isVideoCall,incomingCall,setIsCalling,isCalling,userInfo,setIsVideoCall,currentChatUser,setIncomingCall}=useUserStore()
+  const {isVideoCall,incomingCall,setIsAudioCall,isAudioCall,setIsCalling,isCalling,userInfo,setIsVideoCall,currentChatUser,setIncomingCall}=useUserStore()
   const socket=useSocketContext()
   const ringRef=useRef(null)
   const  [audioUnlocked,setAudioUnlocked]=useState(false)
@@ -35,6 +36,7 @@ const Chat = () => {
     console.log('incoming',incomingCall)
  
     useEffect(()=>{
+      
     const unlocked=sessionStorage.getItem("audio-unlocked")
     if(unlocked==="true"){
       setAudioUnlocked(true)
@@ -111,28 +113,41 @@ const Chat = () => {
         )}
         {incomingCall && (
           <div className="absolute inset-0 z-30  flex flex-col items-center justify-center bg-gray-900/70">
-             <div className="flex gap-5">
-               <button onClick={()=>{
+           
+             <div className="flex gap-5 flex-col text-amber-50">
+             
+               <span> Incoming  {incomingCall.type==="video"?"Video Call":"Audio Call"} from  </span>
+                <div className="flex gap-2">
+                       <button onClick={()=>{
                  stopRing()
-                socket.emit("call-accepted",{from:userInfo?.id,to:incomingCall})
-                setIsVideoCall(true)
+                socket.emit("call-accepted",{from:userInfo?.id,to:incomingCall?.from,type:incomingCall?.type})
+                if(incomingCall?.type==="video"){
+setIsVideoCall(true)
+                } else{
+                  setIsAudioCall(true)
+                }
+                
                }}  className="bg-green-500 text-white w-18 h-18">Accept</button>
              <button onClick={()=>{
              stopRing()
            socket.emit('call-rejected',{
-            to:incomingCall,
+            to:incomingCall?.from,
             from:userInfo?.id
            })
            setIsVideoCall(false)
            setIncomingCall(null)
              }} className="bg-red-500 text-white w-18 h-18">Reject</button>
+                </div>
+              
              </div>
             
           </div>
         )} 
-        {isVideoCall && (<VideoCall isCaller={!incomingCall}/>)}       
 
+       {console.log("incoming",incomingCall)}
+        {isVideoCall && (<VideoCall isCaller={!incomingCall?.from}/>)}       
 
+        {isAudioCall && (<AudioCall isCaller={!incomingCall?.from}/>)}
         </div>
       
     

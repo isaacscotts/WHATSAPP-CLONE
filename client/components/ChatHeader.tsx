@@ -13,12 +13,13 @@ const ChatHeader = () => {
   const socket=useSocketContext()
   const { currentChatUser, userInfo, setIsVideoCall,  setIsCalling} = useUserStore();
  
- const startCall=async()=>{
+ const startCall=async(audio)=>{
   setIsCalling(true)
   if(!socket || !currentChatUser || !userInfo)  return;
       socket.emit("call-user",{
         from:userInfo?.id,
-        to:currentChatUser?.id
+        to:currentChatUser?.id,
+        type:audio?"audio":"video"
       })
 
  }
@@ -30,8 +31,8 @@ const ChatHeader = () => {
       <Avatar type="sm" image={currentChatUser?.profilePic} />
 
       <div className="flex gap-4 text-white text-2xl items-center">
-        <MdCall className="cursor-pointer" />
-        <FaVideo className="cursor-pointer" onClick={()=>startCall()}/>
+        <MdCall className="cursor-pointer" onClick={()=>startCall(true)} />
+        <FaVideo className="cursor-pointer" onClick={()=>startCall(false)}/>
         <FaSearch className="cursor-pointer" />
         <BsThreeDotsVertical />
       </div>

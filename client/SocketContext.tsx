@@ -12,7 +12,8 @@ export const SocketContextProvider = ({ children }) => {
     addMessager,
     setIncomingCall,
     setIsVideoCall,
-    setIsCalling
+    setIsCalling,
+    setIsAudioCall
 
   } = useUserStore();
 
@@ -31,16 +32,21 @@ export const SocketContextProvider = ({ children }) => {
       addMessager(data.message);
     });
   //incoming call
-   socketRef.current.on("incoming-call",({from})=>{
+   socketRef.current.on("incoming-call",({from,type})=>{
     console.log("incoming call from",from)
-     setIncomingCall(from)
+     setIncomingCall({from,type})
      
    })
 
    // call accepted
-   socketRef.current.on('call-accepted',({from})=>{
+   socketRef.current.on('call-accepted',({from,type})=>{
     setIsCalling(false)
-    setIsVideoCall(true)
+    if(type==="video"){
+setIsVideoCall(true)
+    } else{
+      setIsAudioCall(true)
+    }
+    
    })
    
 // call rejected 

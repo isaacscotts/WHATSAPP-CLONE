@@ -4,6 +4,13 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+.record-canvas {
+  width: 100%;
+  height: 40px;
+  background: #0d0d0d;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
 @theme inline {
   --color-background: var(--background);

@@ -76,21 +76,21 @@ io.on("connection", (socket) => {
   })
 
   // calling user
-  socket.on("call-user",({to,from})=>{
+  socket.on("call-user",({to,from,type})=>{
     const sendUserSocket=onlineUsers.get(to)
     if(sendUserSocket){
-      console.log(from,"is calling ",to)
-      socket.to(sendUserSocket).emit('incoming-call',{from})
+      console.log(from,"is calling ",to,type)
+      socket.to(sendUserSocket).emit('incoming-call',{from,type})
     }
   })
 
  // call accepted
- socket.on("call-accepted",({from,to})=>{
-  console.log("call accepting")
+ socket.on("call-accepted",({from,to,type})=>{
+  console.log("call accepting",to)
     const sendUserSocket=onlineUsers.get(to)
     if(sendUserSocket){
       console.log("call accepted from ",from,'to',to)
-      socket.to(sendUserSocket).emit("call-accepted",{from,to})
+      socket.to(sendUserSocket).emit("call-accepted",{from,to,type})
     }
     
  })
