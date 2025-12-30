@@ -14,7 +14,7 @@ const useUserStore=create()(persist(
       incomingCall:null,
       isCalling:false,
       audioUnlocked:false,
-      isAudioCall:true,
+      isAudioCall:false,
       setIsAudioCall:(info)=>set({isAudioCall:info}),
       setAudioUnlocked:(info)=>set({audioUnlocked:info}),
       setIsCalling:(info)=>set({isCalling:info}),
