@@ -102,7 +102,7 @@ const Chat = () => {
                <Avatar type={"c"} image={currentChatUser?.profilePic}/>
                <div><span className="p-4 text-7xl text-red-600"><MdCallEnd onClick={()=>{
                 socket.emit("call-cancel",{
-                  from:userInfo?.id,
+                  from:socket.id,
                   to:currentChatUser?.id
                 })
                 setIsCalling(false)

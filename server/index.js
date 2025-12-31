@@ -113,7 +113,7 @@ io.on("connection", (socket) => {
    })
 
    socket.on("call-cancel",({from,to})=>{
-        const sendUserSocket=to
+        const sendUserSocket=onlineUsers.get(to)
       if(sendUserSocket){
         console.log("user ",from,"cancalled the call"," for",to)
         socket.to(sendUserSocket).emit("call-cancel",{from,to})
