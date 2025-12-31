@@ -20,7 +20,7 @@ const VoiceMessage=({message})=>{
   console.log("this is the message boi",message)
  const audio=new Audio(`${HOST}/${message?.message}`)
  const currentMessageId=message?.id
-  const audioUrl=`${HOST}/${message?.message}`
+  const audioUrl=message?.isLocal?message?.message:`${HOST}/${message?.message}`
 const play=()=>{
  // audio.play()
   wave.current.play()

@@ -28,6 +28,13 @@ setPeerSocketId: (id) => set({ peerSocketId: id }),
         isAudioCall:false,
         callPeerId:false
       }),
+      updateMessageByTempId: (tempId, newMessage) =>
+  set((state) => ({
+    messages: state.messages.map((msg) =>
+      msg.tempId === tempId ? { ...msg, ...newMessage } : msg
+    ),
+  })),
+
       setIncomingCall:(from)=>set({incomingCall:from}),
       isScreenShare:false,
       setIsScreenShare:(info)=>set({isScreenShare:info}),
