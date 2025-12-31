@@ -24,10 +24,20 @@ export const SocketContextProvider = ({ children }) => {
   useEffect(() => {
     if (!userInfo?.id) return;
 
-    socketRef.current = io(HOST);
+    socketRef.current = io(HOST,{
+      reconnection: true,
+  reconnectionAttempts: 20,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  transports: ["websocket"],
+    });
 
     // REGISTER USER
-    socketRef.current.emit("add-client", userInfo.id);
+    socketRef.current.on("connect", () => {
+  console.log("Connected:", socketRef.current.id);
+  socketRef.current.emit("add-client", userInfo.id);
+});
+  //  socketRef.current.emit("add-client", userInfo.id);
 
     // ================= CHAT =================
     socketRef.current.on("msg-receive", (data) => {
@@ -65,11 +75,21 @@ setIsVideoCall(true)
 socketRef.current.on("call-cancel",({from,to})=>{
   
   setIncomingCall(null)
+
+   
 })
+const ensureConnection = () => {
+    if (!socketRef.current.connected) socketRef.current.connect();
+  };
+  window.addEventListener("online", ensureConnection);
+  document.addEventListener("visibilitychange", ensureConnection);
+
 
    return () => {
   socketRef.current?.off();
   socketRef.current?.disconnect();
+  window.removeEventListener("online", ensureConnection);
+    document.removeEventListener("visibilitychange", ensureConnection);
 };
   }, [userInfo]);
 

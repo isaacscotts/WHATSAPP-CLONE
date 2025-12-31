@@ -21,7 +21,7 @@ const ChatHeader = () => {
         to:currentChatUser?.id,
         type:audio?"audio":"video"
       })
-      setPeerSocketId(socket.id)
+      setPeerSocketId(socket.id) 
 
  }
   
