@@ -23,14 +23,10 @@ This project is currently under active development.
 I am a Full-Stack Developer specializing in real-time systems and audio/video integration. I am available for **freelance opportunities, custom integrations, or full-time roles.**
 
 ### 💳 How to Pay / Hire Me
-I accept international payments from anywhere in the world:
+For freelance or commercial use, please contact me directly.
 
-1. **Payoneer (Preferred for Business):** - **Account ID:** `101319679` 
-   - **Email:** `kayimaisaac03@gmail.com`
-   
-2. **Instant Mobile Money (International to Uganda):** - If you are abroad, you can send payment directly to my **Airtel Money** wallet using **WorldRemit**, **Sendwave**, or **Remitly**.
-   - **Recipient Name:** Kayima Isaac
-   - **Phone Number:** +256703984742
+📧 Email: kayimaisaac03@gmail.com  
+🔗 LinkedIn: https://www.linkedin.com/in/kayima-isaac-70a8a03a3/
 
 - **LinkedIn:** https://www.linkedin.com/in/kayima-isaac-70a8a03a3/
 - **Email:** kayimaisaac03@gmail.com
