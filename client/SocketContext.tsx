@@ -15,6 +15,7 @@ export const SocketContextProvider = ({ children }) => {
     setIsVideoCall,
     setIsCalling,
     setIsAudioCall,
+    currentChatUser,
     setCallPeerId,
     setMessageDelivered,
     setMessagesSeen
@@ -43,7 +44,10 @@ export const SocketContextProvider = ({ children }) => {
 
     // ================= CHAT =================
     socketRef.current.on("msg-receive", (data) => {
-      addMessager(data);
+      if(data?.id===currentChatUser?.id){
+           addMessager(data);
+      }
+     
     });
 
 
