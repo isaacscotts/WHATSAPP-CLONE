@@ -95,8 +95,8 @@ const BAR_WIDTH =
 
   frameCounterRef.current += 1
 
-// 🔥 CONTROL SPEED HERE
-const SPEED = 6 // 👈 higher = slower (WhatsApp ~6–8)
+// CONTROL SPEED HERE
+const SPEED = 6 //  higher = slower (WhatsApp ~6–8)
 
 if (frameCounterRef.current % SPEED === 0) {
   barHistoryRef.current.shift()
@@ -198,7 +198,7 @@ if (frameCounterRef.current % SPEED === 0) {
      /*  const startRecording = async () => {
   isPausedRef.current = false
 
-  // 🔹 Create audio graph ONLY ONCE
+  //  Create audio graph ONLY ONCE
   if (!audioCtxRef.current) {
     audioCtxRef.current = new AudioContext()
     sampleRateRef.current = audioCtxRef.current.sampleRate
@@ -231,7 +231,7 @@ analyserRef.current.smoothingTimeConstant=0.8
     processorRef.current.connect(audioCtxRef.current.destination)
   }
 
-  // 🔹 Resume instead of recreate
+  //  Resume instead of recreate
   if (audioCtxRef.current.state === "suspended") {
     await audioCtxRef.current.resume()
   }
@@ -376,21 +376,17 @@ const uploadRecording=async(audioFile,tempId)=>{
             body:formData
         })
         const responseData=await response.json()
-        if(responseData?.newMessage){
+        if(responseData?.data){
         //  addMessager(responseData?.newMessage)
          updateMessageByTempId(tempId, {
-  ...responseData?.newMessage,
-  status: "sent",
+  ...responseData?.data,
+  messageStatus: "sent",
   isLocal:false
 })
 
-          socket.emit("msg-send",{
-        from:userInfo?.id,
-        to:currentChatUser?.id,
-        message:responseData?.newMessage
-      })
+          socket.emit("msg-send",responseData?.data)
         }
-        console.log("voice message addred",responseData)
+        console.log("voice message addred",responseData?.data)
         
 
       

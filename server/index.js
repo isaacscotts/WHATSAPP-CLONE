@@ -3,6 +3,7 @@ import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import { Server } from "socket.io";
+import { db } from "./utils/PrismaClient.js";
 
 const app = express();
 const PORT = 8000;
@@ -38,15 +39,48 @@ io.on("connection", (socket) => {
 
   // ===================== CHAT =====================
   socket.on("msg-send", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);
+    console.log("sennnnnn",data)
+    const sendUserSocket = onlineUsers.get(data.receiverId);
 
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-receive", {
-        to: data.to,
-        from: data.from,
-        message: data.message,
-      });
+      socket.to(sendUserSocket).emit("msg-receive",data);
+    
+  // tellling user it is delivered
+      socket.emit("msg-delivered",{
+        messageId:data.id
+      })
+
+      const update=async ()=>{
+            await db.messages.update({
+        where:{id:data.id},
+        data:{messageStatus:"delivered"}
+      })
+      }
+      update()
+    
     }
+  })
+
+  //msg read
+  socket.on("msg-read",({from,to,messageIds})=>{
+    const sendUserSocket=onlineUsers.get(from)
+    if(sendUserSocket){
+      socket.to(sendUserSocket).emit("msg-read",{
+        messageIds,
+      })
+    }
+
+    const update=async ()=>{
+            await db.messages.updateMany({
+        where:{id:{
+          in:messageIds
+        }},
+        data:{messageStatus:"read"}
+      })
+      }
+      update()
+    
+
   })
 
   //webrtc ice

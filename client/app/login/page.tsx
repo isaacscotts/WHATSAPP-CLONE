@@ -4,18 +4,19 @@ import { FcGoogle } from "react-icons/fc";
 import {SignInButton, useUser} from "@clerk/nextjs"
 import Image from 'next/image';
 import { checkUser } from "@/utils/ApiRoutes";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import useUserStore from "@/store";
 import { resolve } from "path";
 const Login=()=>{
     const {isLoaded,isSignedIn,user}=useUser()
-    const {setUserInfo,setMessages}=useUserStore();
+    const {setUserInfo,setMessages,setCurrentChatUser}=useUserStore();
     const router=useRouter()
  useEffect(() => {
   if (!isLoaded) return
-  if (!isSignedIn) return
+  if(!isSignedIn) return
   if (!user?.id) return
 
+  
   let cancelled = false
 
   const checkUSER = async () => {
@@ -33,15 +34,18 @@ const Login=()=>{
         })
 
         const dataResponse = await response.json()
-
+         
         if (dataResponse?.data) {
+          
           if (!dataResponse.data.onboarding) {
+            setCurrentChatUser(null)
             setUserInfo(dataResponse.data)
             router.push("/onboarding")
             return
           }
 
           setUserInfo(dataResponse.data)
+          
           router.push("/")
           return
         }
@@ -64,7 +68,7 @@ const Login=()=>{
     cancelled = true
   }
 }, [isLoaded, isSignedIn, user?.id])
-
+ 
     return (
         <div className='flex justify-center h-screen flex-col bg-[#202c33] items-center'>
             <div className='flex gap-2 items-center'>

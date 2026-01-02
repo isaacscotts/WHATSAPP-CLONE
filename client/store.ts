@@ -17,6 +17,7 @@ const useUserStore=create()(persist(
       isAudioCall:false,
       callPeerId: null,
       peerSocketId: null,
+
 setPeerSocketId: (id) => set({ peerSocketId: id }),
       setCallPeerId: (id) => set({ callPeerId: id }),
       setIsAudioCall:(info)=>set({isAudioCall:info}),
@@ -34,7 +35,17 @@ setPeerSocketId: (id) => set({ peerSocketId: id }),
       msg.tempId === tempId ? { ...msg, ...newMessage } : msg
     ),
   })),
-
+    setMessagesSeen:(msgIds)=>set((state)=>({
+       messages:state.messages.map((msg)=>
+        msgIds.includes(msg.id) ?{...msg,messageStatus:"read"}:msg
+      )
+    }))
+  ,
+     setMessageDelivered:(messageId)=>set((state)=>({
+      messages:state.messages.map((msg)=>
+        msg.id===messageId ?{...msg,messageStatus:"delivered"}:msg
+      )
+     })),
       setIncomingCall:(from)=>set({incomingCall:from}),
       isScreenShare:false,
       setIsScreenShare:(info)=>set({isScreenShare:info}),
@@ -42,6 +53,7 @@ setPeerSocketId: (id) => set({ peerSocketId: id }),
       setPlayingMessageId:(id)=>set({playingMessageId:id}),
       setUserInfo:(info)=>set({userInfo:info}),
       setMessages:(info)=>set({messages:info}),
+      clearMessages:()=>set({messages:[]}),
       setContactsPage:()=>set((state)=>({contactsPage:!state.contactsPage})),
      addMessager:(message)=>set((state)=>({messages:[...state.messages,message]})), 
       setCurrentChatUser:(userInfo)=>set({currentChatUser:userInfo})

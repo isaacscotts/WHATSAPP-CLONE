@@ -66,7 +66,7 @@ export const addImageMessage=async(req,res,next)=>{
                 type:"image"
             }
         })
-        return res.status(201).json({status:true,newMessage})
+        return res.status(201).json({status:true,data:newMessage})
       }
   } 
   catch(err){
@@ -95,7 +95,7 @@ export const addVoiceMessage=async(req,res,next)=>{
          })
 
 
-          return res.json({message:"success",newMessage,status:true})
+          return res.json({message:"success",data:newMessage,status:true})
 
       }
       }

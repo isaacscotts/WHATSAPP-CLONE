@@ -4,5 +4,5 @@ import { allContacts, checkUser ,onboardUser} from "../controllers/AuthControlle
 const router=Router()
 router.post("/check-user",checkUser)
 router.post('/onboarding',onboardUser)
-router.get("/get-all-contacts",allContacts)
+router.get("/get-all-contacts/:from",allContacts)
 export default router;

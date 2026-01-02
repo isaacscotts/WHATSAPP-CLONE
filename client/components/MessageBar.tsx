@@ -12,7 +12,7 @@ import { useSocketContext } from "@/SocketContext";
 import Capture from "./CapturePro";
 
 const MessageBar=()=>{
-    const {currentChatUser,userInfo,addMessager}=useUserStore()
+    const {currentChatUser,userInfo,addMessager,updateMessageByTempId}=useUserStore()
     const emojiPickerRef=useRef(null)
     const socket=useSocketContext()
     const [message,setMessage]=useState('')
@@ -20,7 +20,20 @@ const MessageBar=()=>{
     const [showEmoji,setShowEmoji]=useState(false)
     const [grabPhoto,setGrabPhoto]=useState(false)
     const sendMessage=async ()=>{
-      const response=await fetch(addMessage,{
+      const tempId=crypto.randomUUID()
+          const tempMessage = {
+  tempId,
+  senderId: userInfo.id,
+  receiverId: currentChatUser.id,
+  type: "text",
+  isLocal:true,
+  message: message, // local
+  messageStatus: "sending", // 👈 important
+  createdAt: Date.now(),
+}
+addMessager(tempMessage)
+setMessage("")
+ const response=await fetch(addMessage,{
         method:"post",
         headers:{
             "Content-Type":"application/json"
@@ -28,13 +41,14 @@ const MessageBar=()=>{
         body:JSON.stringify({message,from:userInfo?.id,to:currentChatUser?.id})
       })
       const dataResponse=await response.json()
-      addMessager(dataResponse?.data)
-      socket.emit("msg-send",{
-        from:userInfo?.id,
-        to:currentChatUser?.id,
-        message:dataResponse?.data
-      })
-      setMessage("")
+      console.log(dataResponse)
+       updateMessageByTempId(tempId, {
+  ...dataResponse?.data,
+  messageStatus: "sent",
+  isLocal:false
+})
+      socket.emit("msg-send",dataResponse?.data)
+      
       console.log(dataResponse)
      
 }
@@ -46,7 +60,19 @@ const OnChange=async(e)=>{
   try{
     
     const file=e.target.files[0]
-    console.log(file)
+    if(!file) return ;
+    const tempId=crypto.randomUUID()
+          const tempMessage = {
+  tempId,
+  senderId: userInfo.id,
+  receiverId: currentChatUser.id,
+  type: "image",
+  isLocal:true,
+  message: URL.createObjectURL(file), // local
+  messageStatus: "sending", 
+  createdAt: Date.now(),
+}
+addMessager(tempMessage)
     const formData=new FormData()
     formData.append('image',file)
     const response=await fetch(`${addImageMessage}/${userInfo?.id}/${currentChatUser?.id}`,{
@@ -55,12 +81,14 @@ const OnChange=async(e)=>{
     })
 
     const dataResponse=await response.json()
-    addMessager(dataResponse?.newMessage)
-    socket.emit('msg-send',{
-      from:userInfo?.id,
-      to:currentChatUser?.id,
-      message:dataResponse?.newMessage
-    })
+
+    console.log("voice",dataResponse?.data?.data)
+    updateMessageByTempId(tempId, {
+  ...dataResponse?.data?.data,
+  messageStatus: "sent",
+  isLocal:false
+})
+    socket.emit('msg-send',dataResponse?.data)
     console.log(dataResponse)
     
   }

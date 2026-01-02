@@ -15,7 +15,9 @@ export const SocketContextProvider = ({ children }) => {
     setIsVideoCall,
     setIsCalling,
     setIsAudioCall,
-    setCallPeerId
+    setCallPeerId,
+    setMessageDelivered,
+    setMessagesSeen
 
   } = useUserStore();
 
@@ -41,8 +43,19 @@ export const SocketContextProvider = ({ children }) => {
 
     // ================= CHAT =================
     socketRef.current.on("msg-receive", (data) => {
-      addMessager(data.message);
+      addMessager(data);
     });
+
+
+    //msg deliver
+    socketRef.current.on('msg-delivered',({messageId})=>{
+      setMessageDelivered(messageId)
+    })
+
+    //msg read
+    socketRef.current.on("msg-read",({messageIds})=>{
+       setMessagesSeen(messageIds)
+    })
   //incoming call
    socketRef.current.on("incoming-call",({from,type})=>{
     console.log("incoming call from",from)

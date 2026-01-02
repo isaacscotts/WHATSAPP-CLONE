@@ -46,8 +46,14 @@ export const onboardUser=async (req,res,next)=>{
 }
 
 export const allContacts=async (req,res,next)=>{
+   const {from}=req.params
+
+   console.log('this man needs contacts',from)
    try{
       const users=await db.user.findMany({
+         where :{
+            id:{not :parseInt(from)}
+         },
          orderBy:{username:"asc"},
          select:{
             id:true,

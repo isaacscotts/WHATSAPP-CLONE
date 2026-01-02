@@ -1,7 +1,6 @@
 //export const HOST='http://localhost:8000'
 export const HOST="https://whatsapp-clone-backend-ir8b.onrender.com"
-//export const HOST='http://10.73.5.173:8000'
-//export const HOST="https://d7lmxpx5-8000.uks1.devtunnels.ms"
+
 
 
 export const checkUser=`${HOST}/api/auth/check-user`;

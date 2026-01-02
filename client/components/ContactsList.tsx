@@ -5,21 +5,24 @@ import { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
 import Avatar from "./Avatar";
+import { userInfo } from "os";
 
 const ContactsList=()=>{
     const [allContacts,setAllContacts]=useState([])
-    const {setContactsPage,setCurrentChatUser}=useUserStore()
+    const {setContactsPage,userInfo,clearMessages,currentChatUser,setCurrentChatUser}=useUserStore()
 
     const handleBack=()=>{
      setContactsPage()
     }
 const handleContactClick=(user)=>{
+     if(user?.id===currentChatUser?.id) return;
      setCurrentChatUser(user)
+     clearMessages()
 }
 useEffect(()=>{
      const getContacts=async ()=>{
           try{
-            const response=await fetch(getAllUsers)
+            const response=await fetch(`${getAllUsers}/${userInfo?.id}`)
             const {users}=await response.json()
             console.log('users',users)
             setAllContacts(users)

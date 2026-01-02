@@ -8,6 +8,8 @@ import Avatar from "./Avatar";
 import useUserStore from "@/store";
 import { CiWavePulse1 } from "react-icons/ci";
 import { HOST } from "@/utils/ApiRoutes";
+import { MdDone } from "react-icons/md";
+import { MdDoneAll } from "react-icons/md";
 const VoiceMessage=({message})=>{
   const waveFormRef=useRef(null)
   const wave=useRef(null)
@@ -92,8 +94,17 @@ useEffect(()=>{
         
           <div className="flex flex-col">
             <div className="flex-1 w-40 pl-2" ref={waveFormRef}></div>
+            <div className="flex justify-between">
+
+            <div> {isPlaying?formatTime(currentPlaybackTime):formatTime(totalDuration)}</div>
             <div>
-              {isPlaying?formatTime(currentPlaybackTime):formatTime(totalDuration)}
+              {message.messageStatus==="sent" &&   message.senderId===userInfo?.id && (<span><MdDone/></span>)}
+              {message.messageStatus==="sending"&&  message.senderId===userInfo?.id &&  (<span>🕒</span>)}
+              {message.messageStatus==="delivered"&&   message.senderId===userInfo?.id &&   (<span><MdDoneAll/></span>)}
+               {message.messageStatus==="read"&&  message.senderId===userInfo?.id &&   (<span><MdDoneAll className="text-blue-500 text-sm" /></span>)}
+               
+              </div> 
+               
               </div>
           </div>
           
