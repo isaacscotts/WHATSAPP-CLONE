@@ -44,9 +44,10 @@ export const SocketContextProvider = ({ children }) => {
 
     // ================= CHAT =================
     socketRef.current.on("msg-receive", (data) => {
-      if(data?.id===currentChatUser?.id){
+      console.log("message received",data)
+      
            addMessager(data);
-      }
+      
      
     });
 

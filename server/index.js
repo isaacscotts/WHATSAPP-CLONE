@@ -28,6 +28,7 @@ const io = new Server(server, {
   },
 });
 
+
 io.on("connection", (socket) => {
   console.log("🔌 client connected:", socket.id);
 
@@ -38,8 +39,12 @@ io.on("connection", (socket) => {
   });
 
   // ===================== CHAT =====================
-  socket.on("msg-send", (data) => {
+  socket.on("msg-send", async(data) => {
     console.log("sennnnnn",data)
+        await db.messages.update({
+        where:{id:data.id},
+        data:{messageStatus:"delivered"}
+      })
     const sendUserSocket = onlineUsers.get(data.receiverId);
 
     if (sendUserSocket) {
@@ -49,36 +54,34 @@ io.on("connection", (socket) => {
       socket.emit("msg-delivered",{
         messageId:data.id
       })
-
-      const update=async ()=>{
-            await db.messages.update({
-        where:{id:data.id},
-        data:{messageStatus:"delivered"}
-      })
-      }
-      update()
+       
     
     }
   })
 
   //msg read
-  socket.on("msg-read",({from,to,messageIds})=>{
-    const sendUserSocket=onlineUsers.get(from)
-    if(sendUserSocket){
-      socket.to(sendUserSocket).emit("msg-read",{
-        messageIds,
-      })
-    }
-
-    const update=async ()=>{
+  socket.on("msg-read",async ({from,to,messageIds})=>{
+        console.log('msg kkks')
+       if (!messageIds?.length) return;
+   
             await db.messages.updateMany({
         where:{id:{
           in:messageIds
         }},
         data:{messageStatus:"read"}
       })
-      }
-      update()
+    const sendUserSocket=onlineUsers.get(from)
+    if(sendUserSocket){
+      console.log('read ignited')
+      socket.to(sendUserSocket).emit("msg-read",{
+        messageIds,
+      })
+    }
+
+
+
+
+  
     
 
   })
